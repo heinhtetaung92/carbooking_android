@@ -2,6 +2,9 @@ package algo.com.carbookingandroid.googlemap;
 
 import com.google.android.gms.maps.model.LatLng;
 
+import algo.com.carbookingandroid.model.APIResponse;
+import retrofit2.Callback;
+
 /**
  * Created by heinhtetaung on 25/7/18.
  */
@@ -14,11 +17,15 @@ public class MapContract {
 
         void enableMyLocationOnMap();
 
+        void searchBookingsAvailability(long startTime, long endTime, Callback<APIResponse> responseCallback);
+
+        void showToast(String msg);
+
     }
 
     public interface Presenter {
 
-        void setupGoogleMap();
+        void GoogleMapIsReady();
 
         void locationPermissionGranted();
 

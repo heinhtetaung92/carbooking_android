@@ -2,15 +2,14 @@ package algo.com.carbookingandroid;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
-import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
+import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -21,6 +20,9 @@ import com.google.android.gms.maps.model.MarkerOptions;
 
 import algo.com.carbookingandroid.googlemap.MapContract;
 import algo.com.carbookingandroid.googlemap.MapPresenter;
+import algo.com.carbookingandroid.model.APIResponse;
+import algo.com.carbookingandroid.restfullapi.APIManager;
+import retrofit2.Callback;
 
 import static android.Manifest.permission.ACCESS_COARSE_LOCATION;
 import static android.Manifest.permission.ACCESS_FINE_LOCATION;
@@ -51,7 +53,7 @@ public class BookingSearchActivity extends AppCompatActivity implements OnMapRea
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
 
-        mapPresenter.setupGoogleMap();
+        mapPresenter.GoogleMapIsReady();
 
     }
 
@@ -80,6 +82,17 @@ public class BookingSearchActivity extends AppCompatActivity implements OnMapRea
         }else{
             requestLocationPermission();
         }
+    }
+
+    @Override
+    public void searchBookingsAvailability(long startTime, long endTime, Callback<APIResponse> responseCallback) {
+        APIManager.getInstance().API_Service().searchBookingValidity(startTime, endTime)
+                .enqueue(responseCallback);
+    }
+
+    @Override
+    public void showToast(String msg) {
+        Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
     }
 
     private boolean hasLocationPermission(){

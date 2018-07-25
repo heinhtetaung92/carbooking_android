@@ -33,6 +33,10 @@ dependencies {
 
     //retrofit
     implementation 'com.squareup.retrofit2:retrofit:2.4.0'
+    // JSON Converter
+    implementation ('com.squareup.retrofit2:converter-gson:2.3.0') {
+        exclude module: 'retrofit'
+    }
 
     implementation 'com.android.support:support-annotations:27.1.1'
 }

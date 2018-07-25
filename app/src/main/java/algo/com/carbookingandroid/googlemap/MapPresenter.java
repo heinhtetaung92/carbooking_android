@@ -1,6 +1,22 @@
 package algo.com.carbookingandroid.googlemap;
 
+import android.location.Location;
+
 import com.google.android.gms.maps.model.LatLng;
+import com.google.gson.Gson;
+
+import org.json.JSONObject;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+
+import algo.com.carbookingandroid.model.APIErrorResponse;
+import algo.com.carbookingandroid.model.APIResponse;
+import algo.com.carbookingandroid.model.LocationSector;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 /**
  * Created by heinhtetaung on 25/7/18.
@@ -9,15 +25,17 @@ import com.google.android.gms.maps.model.LatLng;
 public class MapPresenter implements MapContract.Presenter {
 
     MapContract.View mView;
+    private List<LocationSector> mSectorList;
 
     public MapPresenter(MapContract.View view){
         this.mView = view;
     }
 
     @Override
-    public void setupGoogleMap() {
+    public void GoogleMapIsReady() {
         addSingaporeLocationMarker();
         mView.enableMyLocationOnMap();
+        searchBookings();
     }
 
     @Override
@@ -34,6 +52,48 @@ public class MapPresenter implements MapContract.Presenter {
         mView.moveCamera(singapore, 12.0f);
     }
 
+    private void searchBookings(){
+        mView.searchBookingsAvailability(234523456, 23452345,
+                new Callback<APIResponse>() {
+                    @Override
+                    public void onResponse(Call<APIResponse> call, Response<APIResponse> response) {
+                        if(response.isSuccessful()){
+                            saveSectors(response.body().getSectorList());
+                        }else{
+                            //send error message
+                            try {
+                                parseErrorResponse(response.errorBody().string());
+                            } catch (IOException e) {
+//                                e.printStackTrace();
+                                showSimpleError();
+                            }
+                        }
+                    }
 
+                    @Override
+                    public void onFailure(Call<APIResponse> call, Throwable t) {
+                        //show error
+                        showSimpleError();
+                    }
+                });
+    }
+
+    private void showSimpleError(){
+        mView.showToast("Something went wrong!!!");
+    }
+
+    private void parseErrorResponse(String errStr){
+        Gson gson = new Gson();
+        APIErrorResponse errResponse = gson.fromJson(errStr, APIErrorResponse.class);
+        mView.showToast(errResponse.getMessage());
+    }
+
+    private void saveSectors(List<LocationSector> sectors){
+        if(sectors == null){
+            this.mSectorList = new ArrayList<>();
+        }else{
+            this.mSectorList = sectors;
+        }
+    }
 
 }
