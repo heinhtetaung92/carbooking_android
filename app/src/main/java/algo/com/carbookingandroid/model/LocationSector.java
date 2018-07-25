@@ -63,4 +63,5 @@ public class LocationSector {
     public void setLocation(List<Float> location) {
         this.location = location;
     }
+
 }

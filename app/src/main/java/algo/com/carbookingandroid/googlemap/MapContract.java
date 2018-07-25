@@ -21,6 +21,8 @@ public class MapContract {
 
         void showToast(String msg);
 
+        void clearMarkers();
+
     }
 
     public interface Presenter {

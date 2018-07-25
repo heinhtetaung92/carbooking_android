@@ -95,6 +95,11 @@ public class BookingSearchActivity extends AppCompatActivity implements OnMapRea
         Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
     }
 
+    @Override
+    public void clearMarkers() {
+        mMap.clear();
+    }
+
     private boolean hasLocationPermission(){
         return (ActivityCompat.checkSelfPermission(this, ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED);
     }

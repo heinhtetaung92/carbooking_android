@@ -13,6 +13,7 @@ import java.util.List;
 
 import algo.com.carbookingandroid.model.APIErrorResponse;
 import algo.com.carbookingandroid.model.APIResponse;
+import algo.com.carbookingandroid.model.DropOffLocation;
 import algo.com.carbookingandroid.model.LocationSector;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -59,6 +60,7 @@ public class MapPresenter implements MapContract.Presenter {
                     public void onResponse(Call<APIResponse> call, Response<APIResponse> response) {
                         if(response.isSuccessful()){
                             saveSectors(response.body().getSectorList());
+                            showFirstSector();
                         }else{
                             //send error message
                             try {
@@ -94,6 +96,20 @@ public class MapPresenter implements MapContract.Presenter {
         }else{
             this.mSectorList = sectors;
         }
+    }
+
+    private void showFirstSector(){
+        if(mSectorList.size() > 0){
+            LocationSector sector =  mSectorList.get(0);
+            mView.clearMarkers();
+            for(int i=0;i<sector.getDropOffLocations().size() ; i++){
+                showMarker(sector.getDropOffLocations().get(i));
+            }
+        }
+    }
+
+    private void showMarker(DropOffLocation location){
+        mView.addMarker(location.getLatLong(), "");
     }
 
 }
