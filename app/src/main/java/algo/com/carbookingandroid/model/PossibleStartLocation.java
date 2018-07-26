@@ -2,6 +2,7 @@ package algo.com.carbookingandroid.model;
 
 import com.google.android.gms.maps.model.LatLng;
 import com.google.gson.annotations.SerializedName;
+import com.google.maps.android.clustering.ClusterItem;
 
 import java.util.List;
 
@@ -9,7 +10,7 @@ import java.util.List;
  * Created by heinhtetaung on 25/7/18.
  */
 
-public class LocationSector {
+public class PossibleStartLocation {
     /***
      * "dropoff_locations":[]
      * "available_cars": 4,
@@ -24,7 +25,7 @@ public class LocationSector {
     int _id;
 
     @SerializedName("dropoff_locations")
-    List<DropOffLocation> dropOffLocations;
+    List<ParkingLocation> dropOffLocations;
 
     @SerializedName("available_cars")
     int availableCars;
@@ -40,11 +41,11 @@ public class LocationSector {
         this._id = _id;
     }
 
-    public List<DropOffLocation> getDropOffLocations() {
+    public List<ParkingLocation> getDropOffLocations() {
         return dropOffLocations;
     }
 
-    public void setDropOffLocations(List<DropOffLocation> dropOffLocations) {
+    public void setDropOffLocations(List<ParkingLocation> dropOffLocations) {
         this.dropOffLocations = dropOffLocations;
     }
 
@@ -62,6 +63,26 @@ public class LocationSector {
 
     public void setLocation(List<Float> location) {
         this.location = location;
+    }
+
+    public LatLng getPosition() {
+        if(location.size() < 2){
+            //location data is not perfect
+            return null;
+        }else{
+            return new LatLng(location.get(0), location.get(1));
+        }
+    }
+
+    public String getTitle() {
+        if(availableCars <= 0){
+            return "No cars!";
+        }
+        return availableCars + " cars available";
+    }
+
+    public boolean hasAvailableCars(){
+        return availableCars > 0;
     }
 
 }

@@ -11,13 +11,13 @@ import java.util.List;
 public class APIResponse {
 
     @SerializedName("data")
-    List<LocationSector> sectorList;
+    List<PossibleStartLocation> startLocationList;
 
-    public List<LocationSector> getSectorList() {
-        return sectorList;
+    public List<PossibleStartLocation> getStartLocationList() {
+        return startLocationList;
     }
 
-    public void setSectorList(List<LocationSector> sectorList) {
-        this.sectorList = sectorList;
+    public void setStartLocationList(List<PossibleStartLocation> startLocationList) {
+        this.startLocationList = startLocationList;
     }
 }
