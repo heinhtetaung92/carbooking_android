@@ -1,3 +1,15 @@
 <resources>
     <string name="app_name">CarBookingAndroid</string>
+    <string name="carbooking_title">Car Booking</string>
+    <string name="loading_txt">Loading...</string>
+    <string name="simple_err_msg">Something went wrong!!!</string>
+    <string name="search_txt">Search</string>
+    <string name="from_txt">From</string>
+    <string name="to_txt">To</string>
+    <string name="invalid_time_txt">Invalid Time</string>
+    <string name="dropoff_loc_title">Drop off locations at Id{%1$d}</string>
+    <string name="no_cars_txt">No cars!</string>
+    <string name="available_cars_txt">%1$d cars available</string>
+    <string name="select_date_title">Select Date</string>
+    <string name="select_time_title">Select Time</string>
 </resources>

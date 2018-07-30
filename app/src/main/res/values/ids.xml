@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <item name="date_range_selection_layout" type="id"/>
+    <item name="from_date_selector" type="id" />
+    <item name="to_date_selector" type="id" />
+    <item name="search_btn" type="id"/>
+
+</resources>

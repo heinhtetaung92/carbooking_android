@@ -13,6 +13,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import algo.com.carbookingandroid.R;
 import algo.com.carbookingandroid.model.APIErrorResponse;
 import algo.com.carbookingandroid.model.APIResponse;
 import algo.com.carbookingandroid.model.ParkingLocation;
@@ -35,7 +36,7 @@ public class MapPresenter implements MapContract.Presenter {
 
     private static final String TAG = MapPresenter.class.getCanonicalName();
     MapContract.View mView;
-    private Map<Integer, PossibleStartLocation> mStartLocationMap;
+    private HashMap<Integer, PossibleStartLocation> mStartLocationMap = new HashMap<>();
 
     public MapPresenter(MapContract.View view){
         this.mView = view;
@@ -44,9 +45,9 @@ public class MapPresenter implements MapContract.Presenter {
     @Override
     public void GoogleMapIsReady() {
         mView.setUpClusterer();
+        mView.enableMyLocationOnMap();
         addSingaporeLocationMarker();
-//        mView.enableMyLocationOnMap();
-        searchBookings();
+        showPossibleStartLocations();
     }
 
     @Override
@@ -66,7 +67,7 @@ public class MapPresenter implements MapContract.Presenter {
                 mView.clearMarkers();
                 mView.addClusterItems(locations);
                 mView.cluster();
-                switchMode(DROPOFF_POINTS);
+                switchMode(DROPOFF_POINTS, locationId);
             }
 
         }
@@ -79,7 +80,7 @@ public class MapPresenter implements MapContract.Presenter {
     public boolean onBackPressed() {
         if(mMode == DROPOFF_POINTS){
 
-            switchMode(STARTING_POINTS);
+            switchMode(STARTING_POINTS, 0);
             showPossibleStartLocations();
 
             return false;
@@ -94,13 +95,17 @@ public class MapPresenter implements MapContract.Presenter {
             mView.moveCamera(new LatLng(location.getLatitude(), location.getLongitude()), 12.0f);
     }
 
-    private void switchMode(int mode){
+    private void switchMode(int mode, int locationId){
         if(mode == DROPOFF_POINTS){
             mMode = DROPOFF_POINTS;
             mView.showBackButton();
+            mView.hideDateSelector();
+            mView.changeTitle(locationId);
         }else if(mode == STARTING_POINTS){
             mMode = STARTING_POINTS;
             mView.dismissBackButton();
+            mView.showDateSelector();
+            mView.setDefaultTitle();
         }
     }
 
@@ -113,14 +118,22 @@ public class MapPresenter implements MapContract.Presenter {
         mView.moveCamera(singapore, 12.0f);
     }
 
-    private void searchBookings(){
-        mView.searchBookingsAvailability(1532341618, 1532377618,
+    @Override
+    public void searchAvailableBookings(long startTime, long endTime){
+
+        mView.showLoading(true);
+
+        //divided by 1000 is to get TimeInSec since it was in MilliSec
+        mView.searchBookingsAvailability(startTime/1000, endTime/1000,
                 new Callback<APIResponse>() {
                     @Override
                     public void onResponse(Call<APIResponse> call, Response<APIResponse> response) {
+                        mView.showLoading(false);
+
                         if(response.isSuccessful()){
                             saveStartLocationSets(response.body().getStartLocationList());
                             showPossibleStartLocations();
+
                         }else{
                             //send error message
                             try {
@@ -136,12 +149,24 @@ public class MapPresenter implements MapContract.Presenter {
                     public void onFailure(Call<APIResponse> call, Throwable t) {
                         //show error
                         showSimpleError();
+                        mView.showLoading(false);
                     }
                 });
     }
 
+    @Override
+    public HashMap<Integer, PossibleStartLocation> getLocations() {
+        return mStartLocationMap;
+    }
+
+    @Override
+    public void setLocations(HashMap<Integer, PossibleStartLocation> locations) {
+        mStartLocationMap = locations;
+//        showPossibleStartLocations();
+    }
+
     private void showSimpleError(){
-        mView.showToast("Something went wrong!!!");
+        mView.showToast(R.string.simple_err_msg);
     }
 
     private void parseErrorResponse(String errStr){
@@ -157,7 +182,6 @@ public class MapPresenter implements MapContract.Presenter {
                 mStartLocationMap.put(loc.get_id(), loc);
             }
         }
-        Log.i(TAG, "Size of startLocationSet : " + mStartLocationMap.size());
     }
 
     private void showPossibleStartLocations(){

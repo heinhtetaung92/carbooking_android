@@ -4,13 +4,17 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.gson.annotations.SerializedName;
 import com.google.maps.android.clustering.ClusterItem;
 
+import java.io.Serializable;
 import java.util.List;
+
+import algo.com.carbookingandroid.App;
+import algo.com.carbookingandroid.R;
 
 /**
  * Created by heinhtetaung on 25/7/18.
  */
 
-public class PossibleStartLocation {
+public class PossibleStartLocation implements Serializable{
     /***
      * "dropoff_locations":[]
      * "available_cars": 4,
@@ -76,9 +80,9 @@ public class PossibleStartLocation {
 
     public String getTitle() {
         if(availableCars <= 0){
-            return "No cars!";
+            return App.getContext().getString(R.string.no_cars_txt);
         }
-        return availableCars + " cars available";
+        return App.getContext().getString(R.string.available_cars_txt, availableCars);
     }
 
     public boolean hasAvailableCars(){

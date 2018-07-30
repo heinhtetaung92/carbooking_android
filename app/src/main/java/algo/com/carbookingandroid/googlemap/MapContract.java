@@ -4,10 +4,13 @@ import android.location.Location;
 
 import com.google.android.gms.maps.model.LatLng;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import algo.com.carbookingandroid.model.APIResponse;
 import algo.com.carbookingandroid.model.ParkingLocation;
+import algo.com.carbookingandroid.model.PossibleStartLocation;
 import retrofit2.Callback;
 
 /**
@@ -29,6 +32,8 @@ public class MapContract {
 
         void showToast(String msg);
 
+        void showToast(int msgId);
+
         void showSnackbar(String msg);
 
         void clearMarkers();
@@ -47,6 +52,17 @@ public class MapContract {
 
         void getUserLastLocation();
 
+        void hideDateSelector();
+
+        void showDateSelector();
+
+        void showLoading(boolean willShow);
+
+        //to update title for drop off locations, locId is the starting point location id
+        void changeTitle(int locId);
+
+        void setDefaultTitle();
+
     }
 
     public interface Presenter {
@@ -60,6 +76,12 @@ public class MapContract {
         boolean onBackPressed();
 
         void lastLocationReceived(Location location);
+
+        void searchAvailableBookings(long startTime, long endTime);
+
+        HashMap<Integer, PossibleStartLocation> getLocations();
+
+        void setLocations(HashMap<Integer, PossibleStartLocation> locations);
 
     }
 

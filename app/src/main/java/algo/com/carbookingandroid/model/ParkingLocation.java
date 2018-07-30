@@ -6,13 +6,14 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.gson.annotations.SerializedName;
 import com.google.maps.android.clustering.ClusterItem;
 
+import java.io.Serializable;
 import java.util.List;
 
 /**
  * Created by heinhtetaung on 25/7/18.
  */
 
-public class ParkingLocation implements ClusterItem{
+public class ParkingLocation implements ClusterItem, Serializable{
 
     /***
      * "id": 64,
